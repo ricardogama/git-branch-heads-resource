@@ -3,6 +3,11 @@
 
 set -e
 
+# exec 3>&1 # make stdout available as fd 3 for the result
+# exec 1>&2 # redirect all output to stderr for logging
+#
+# source $(dirname $0)/common.sh
+
 payload=$TMPDIR/git-branch-heads-resource-request
 
 cat > $payload <&0
@@ -21,11 +26,12 @@ jq \
   jq --slurpfile payload $payload \
     '. + {version: ($payload | .[0].version)}'
 
+cd "$@"
+
 # Gather branch and tags
 branch=$(jq < $payload -r .version.changed)
 tag=$(git tag -l --points-at $branch)
 
-cd "$@"
 
 # Write branch and tags
 echo $branch > .git/branch
