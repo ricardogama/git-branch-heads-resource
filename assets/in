@@ -21,7 +21,12 @@ jq \
   jq --slurpfile payload $payload \
     '. + {version: ($payload | .[0].version)}'
 
+# Gather branch and tags
+branch=$(jq < $payload -r .version.changed)
+tag=$(git tag -l --points-at $branch)
+
 cd "$@"
 
-# Write branch name.
-jq < $payload -r .version.changed > .git/branch
+# Write branch and tags
+echo $branch > .git/branch
+echo $tag > .git/tag
