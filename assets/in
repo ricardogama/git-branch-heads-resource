@@ -32,7 +32,6 @@ cd "$@"
 branch=$(jq < $payload -r .version.changed)
 tag=$(git tag -l --points-at $branch)
 
-
 # Write branch and tags
 echo $branch > .git/branch
 echo $tag > .git/tag
